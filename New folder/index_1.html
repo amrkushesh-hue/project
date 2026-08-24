@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>مقایسه دو سایت | کیدزمُد و کیدزلند</title>
+<style>
+  * { box-sizing: border-box; }
+  html, body {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    font-family: Tahoma, "Segoe UI", sans-serif;
+    background: #f3f4f6;
+  }
+  .topbar {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: #1f2937;
+    padding: 10px 16px;
+    position: sticky;
+    top: 0;
+    z-index: 20;
+  }
+  .tab-btn {
+    flex: 1;
+    max-width: 320px;
+    padding: 12px 18px;
+    border: none;
+    border-radius: 10px;
+    background: #374151;
+    color: #d1d5db;
+    font-size: 15px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+  .tab-btn.active {
+    background: #ec4899;
+    color: #fff;
+  }
+  .tab-btn:hover:not(.active) {
+    background: #4b5563;
+  }
+  .mode-toggle {
+    margin-inline-start: auto;
+    display: flex;
+    gap: 6px;
+  }
+  .mode-btn {
+    padding: 10px 14px;
+    border: none;
+    border-radius: 10px;
+    background: #374151;
+    color: #d1d5db;
+    font-size: 13px;
+    cursor: pointer;
+  }
+  .mode-btn.active {
+    background: #10b981;
+    color: #fff;
+  }
+  .frames-wrap {
+    display: flex;
+    height: calc(100vh - 60px);
+    width: 100%;
+    gap: 4px;
+    padding: 4px;
+    background: #e5e7eb;
+  }
+  .frame-box {
+    flex: 1;
+    display: none;
+    flex-direction: column;
+    background: #fff;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.15);
+  }
+  .frame-box.visible {
+    display: flex;
+  }
+  .frame-label {
+    background: #111827;
+    color: #fff;
+    font-size: 13px;
+    padding: 6px 12px;
+    text-align: center;
+    font-weight: bold;
+  }
+  iframe {
+    flex: 1;
+    width: 100%;
+    border: none;
+  }
+
+  /* single mode: only one visible at a time */
+  body.single .frame-box { display: none; }
+  body.single .frame-box.visible { display: flex; }
+
+  /* side-by-side mode: both visible together */
+  body.side .frame-box { display: flex; }
+</style>
+</head>
+<body class="single">
+
+<div class="topbar">
+  <button class="tab-btn active" data-target="site1" onclick="showSite('site1')">سایت اول</button>
+  <button class="tab-btn" data-target="site2" onclick="showSite('site2')">سایت دوم</button>
+
+  <div class="mode-toggle">
+    <button class="mode-btn active" id="btn-single" onclick="setMode('single')">تک نمایش</button>
+    <button class="mode-btn" id="btn-side" onclick="setMode('side')">مقایسه کنار هم</button>
+  </div>
+</div>
+
+<div class="frames-wrap">
+  <div class="frame-box visible" id="box-site1">
+    <div class="frame-label">کیدزمُد (kidsmod)</div>
+    <iframe src="./kidsmod_1_1.html" title="کیدزمُد"></iframe>
+  </div>
+  <div class="frame-box" id="box-site2">
+    <div class="frame-label">کیدزلند (kidzsland)</div>
+    <iframe src="./kidzsland-improved_1_1.html" title="کیدزلند"></iframe>
+  </div>
+</div>
+
+<script>
+  function showSite(id) {
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    document.querySelector('[data-target="' + id + '"]').classList.add('active');
+
+    if (document.body.classList.contains('single')) {
+      document.querySelectorAll('.frame-box').forEach(b => b.classList.remove('visible'));
+      document.getElementById('box-' + id).classList.add('visible');
+    }
+  }
+
+  function setMode(mode) {
+    document.body.classList.remove('single', 'side');
+    document.body.classList.add(mode);
+    document.getElementById('btn-single').classList.toggle('active', mode === 'single');
+    document.getElementById('btn-side').classList.toggle('active', mode === 'side');
+
+    if (mode === 'single') {
+      // keep whichever tab was active
+      const activeTab = document.querySelector('.tab-btn.active').dataset.target;
+      showSite(activeTab);
+    } else {
+      document.querySelectorAll('.frame-box').forEach(b => b.classList.add('visible'));
+    }
+  }
+</script>
+
+</body>
+</html>
